@@ -1,12 +1,13 @@
 package manifest
 
 import (
-	"github.com/streamingfast/bstream"
-	"github.com/test-go/testify/require"
 	"sort"
 	"testing"
 
-	pbtransform "github.com/streamingfast/substreams/pb/sf/substreams/transform/v1"
+	"github.com/streamingfast/bstream"
+	"github.com/test-go/testify/require"
+
+	pbsubstreams "github.com/streamingfast/substreams/pb/sf/substreams/v1"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -14,17 +15,17 @@ var ten = uint64(10)
 var twenty = uint64(20)
 var thirty = uint64(30)
 
-var testModules = []*pbtransform.Module{
+var testModules = []*pbsubstreams.Module{
 	{
 		Name: "A",
 	},
 	{
 		Name:       "B",
 		StartBlock: ten,
-		Kind:       &pbtransform.Module_KindStore{KindStore: &pbtransform.KindStore{}},
-		Inputs: []*pbtransform.Input{
+		Kind:       &pbsubstreams.Module_KindStore_{KindStore: &pbsubstreams.Module_KindStore{}},
+		Inputs: []*pbsubstreams.Module_Input{
 			{
-				Input: &pbtransform.Input_Store{Store: &pbtransform.InputStore{
+				Input: &pbsubstreams.Module_Input_Store_{Store: &pbsubstreams.Module_Input_Store{
 					ModuleName: "A",
 				}},
 			},
@@ -33,10 +34,10 @@ var testModules = []*pbtransform.Module{
 	{
 		Name:       "C",
 		StartBlock: twenty,
-		Kind:       &pbtransform.Module_KindMap{KindMap: &pbtransform.KindMap{}},
-		Inputs: []*pbtransform.Input{
+		Kind:       &pbsubstreams.Module_KindMap_{KindMap: &pbsubstreams.Module_KindMap{}},
+		Inputs: []*pbsubstreams.Module_Input{
 			{
-				Input: &pbtransform.Input_Store{Store: &pbtransform.InputStore{
+				Input: &pbsubstreams.Module_Input_Store_{Store: &pbsubstreams.Module_Input_Store{
 					ModuleName: "A",
 				}},
 			},
@@ -44,10 +45,10 @@ var testModules = []*pbtransform.Module{
 	},
 	{
 		Name: "D",
-		Kind: &pbtransform.Module_KindMap{KindMap: &pbtransform.KindMap{}},
-		Inputs: []*pbtransform.Input{
+		Kind: &pbsubstreams.Module_KindMap_{KindMap: &pbsubstreams.Module_KindMap{}},
+		Inputs: []*pbsubstreams.Module_Input{
 			{
-				Input: &pbtransform.Input_Store{Store: &pbtransform.InputStore{
+				Input: &pbsubstreams.Module_Input_Store_{Store: &pbsubstreams.Module_Input_Store{
 					ModuleName: "B",
 				}},
 			},
@@ -56,10 +57,10 @@ var testModules = []*pbtransform.Module{
 	{
 		Name:       "E",
 		StartBlock: ten,
-		Kind:       &pbtransform.Module_KindStore{KindStore: &pbtransform.KindStore{}},
-		Inputs: []*pbtransform.Input{
+		Kind:       &pbsubstreams.Module_KindStore_{KindStore: &pbsubstreams.Module_KindStore{}},
+		Inputs: []*pbsubstreams.Module_Input{
 			{
-				Input: &pbtransform.Input_Store{Store: &pbtransform.InputStore{
+				Input: &pbsubstreams.Module_Input_Store_{Store: &pbsubstreams.Module_Input_Store{
 					ModuleName: "C",
 				}},
 			},
@@ -67,10 +68,10 @@ var testModules = []*pbtransform.Module{
 	},
 	{
 		Name: "F",
-		Kind: &pbtransform.Module_KindStore{KindStore: &pbtransform.KindStore{}},
-		Inputs: []*pbtransform.Input{
+		Kind: &pbsubstreams.Module_KindStore_{KindStore: &pbsubstreams.Module_KindStore{}},
+		Inputs: []*pbsubstreams.Module_Input{
 			{
-				Input: &pbtransform.Input_Store{Store: &pbtransform.InputStore{
+				Input: &pbsubstreams.Module_Input_Store_{Store: &pbsubstreams.Module_Input_Store{
 					ModuleName: "C",
 				}},
 			},
@@ -78,15 +79,15 @@ var testModules = []*pbtransform.Module{
 	},
 	{
 		Name: "G",
-		Kind: &pbtransform.Module_KindStore{KindStore: &pbtransform.KindStore{}},
-		Inputs: []*pbtransform.Input{
+		Kind: &pbsubstreams.Module_KindStore_{KindStore: &pbsubstreams.Module_KindStore{}},
+		Inputs: []*pbsubstreams.Module_Input{
 			{
-				Input: &pbtransform.Input_Store{Store: &pbtransform.InputStore{
+				Input: &pbsubstreams.Module_Input_Store_{Store: &pbsubstreams.Module_Input_Store{
 					ModuleName: "D",
 				}},
 			},
 			{
-				Input: &pbtransform.Input_Store{Store: &pbtransform.InputStore{
+				Input: &pbsubstreams.Module_Input_Store_{Store: &pbsubstreams.Module_Input_Store{
 					ModuleName: "E",
 				}},
 			},
@@ -94,10 +95,10 @@ var testModules = []*pbtransform.Module{
 	},
 	{
 		Name: "K",
-		Kind: &pbtransform.Module_KindStore{KindStore: &pbtransform.KindStore{}},
-		Inputs: []*pbtransform.Input{
+		Kind: &pbsubstreams.Module_KindStore_{KindStore: &pbsubstreams.Module_KindStore{}},
+		Inputs: []*pbsubstreams.Module_Input{
 			{
-				Input: &pbtransform.Input_Store{Store: &pbtransform.InputStore{
+				Input: &pbsubstreams.Module_Input_Store_{Store: &pbsubstreams.Module_Input_Store{
 					ModuleName: "G",
 				}},
 			},
@@ -105,7 +106,7 @@ var testModules = []*pbtransform.Module{
 	},
 	{
 		Name:   "H",
-		Kind:   &pbtransform.Module_KindMap{KindMap: &pbtransform.KindMap{}},
+		Kind:   &pbsubstreams.Module_KindMap_{KindMap: &pbsubstreams.Module_KindMap{}},
 		Inputs: nil,
 	},
 }
@@ -202,7 +203,7 @@ func TestModuleGraph_computeStartBlocks(t *testing.T) {
 		bstream.GetProtocolFirstStreamableBlock = oldValue
 	}()
 
-	var startBlockTestModule = []*pbtransform.Module{
+	var startBlockTestModule = []*pbsubstreams.Module{
 		{
 			Name:       "block_to_pairs",
 			StartBlock: twenty,
@@ -210,10 +211,10 @@ func TestModuleGraph_computeStartBlocks(t *testing.T) {
 		{
 			Name:       "pairs",
 			StartBlock: UNSET,
-			Inputs: []*pbtransform.Input{
+			Inputs: []*pbsubstreams.Module_Input{
 				{
-					Input: &pbtransform.Input_Store{
-						Store: &pbtransform.InputStore{
+					Input: &pbsubstreams.Module_Input_Store_{
+						Store: &pbsubstreams.Module_Input_Store{
 							ModuleName: "block_to_pairs",
 						},
 					},
@@ -223,10 +224,10 @@ func TestModuleGraph_computeStartBlocks(t *testing.T) {
 		{
 			Name:       "block_to_reserves",
 			StartBlock: UNSET,
-			Inputs: []*pbtransform.Input{
+			Inputs: []*pbsubstreams.Module_Input{
 				{
-					Input: &pbtransform.Input_Store{
-						Store: &pbtransform.InputStore{
+					Input: &pbsubstreams.Module_Input_Store_{
+						Store: &pbsubstreams.Module_Input_Store{
 							ModuleName: "pairs",
 						},
 					},
@@ -236,17 +237,17 @@ func TestModuleGraph_computeStartBlocks(t *testing.T) {
 		{
 			Name:       "reserves",
 			StartBlock: UNSET,
-			Inputs: []*pbtransform.Input{
+			Inputs: []*pbsubstreams.Module_Input{
 				{
-					Input: &pbtransform.Input_Store{
-						Store: &pbtransform.InputStore{
+					Input: &pbsubstreams.Module_Input_Store_{
+						Store: &pbsubstreams.Module_Input_Store{
 							ModuleName: "pairs",
 						},
 					},
 				},
 				{
-					Input: &pbtransform.Input_Store{
-						Store: &pbtransform.InputStore{
+					Input: &pbsubstreams.Module_Input_Store_{
+						Store: &pbsubstreams.Module_Input_Store{
 							ModuleName: "block_to_reserves",
 						},
 					},
@@ -256,24 +257,24 @@ func TestModuleGraph_computeStartBlocks(t *testing.T) {
 		{
 			Name:       "prices",
 			StartBlock: UNSET,
-			Inputs: []*pbtransform.Input{
+			Inputs: []*pbsubstreams.Module_Input{
 				{
-					Input: &pbtransform.Input_Store{
-						Store: &pbtransform.InputStore{
+					Input: &pbsubstreams.Module_Input_Store_{
+						Store: &pbsubstreams.Module_Input_Store{
 							ModuleName: "pairs",
 						},
 					},
 				},
 				{
-					Input: &pbtransform.Input_Store{
-						Store: &pbtransform.InputStore{
+					Input: &pbsubstreams.Module_Input_Store_{
+						Store: &pbsubstreams.Module_Input_Store{
 							ModuleName: "block_to_reserves",
 						},
 					},
 				},
 				{
-					Input: &pbtransform.Input_Store{
-						Store: &pbtransform.InputStore{
+					Input: &pbsubstreams.Module_Input_Store_{
+						Store: &pbsubstreams.Module_Input_Store{
 							ModuleName: "reserves",
 						},
 					},
@@ -283,17 +284,17 @@ func TestModuleGraph_computeStartBlocks(t *testing.T) {
 		{
 			Name:       "mint_burn_swaps_extractor",
 			StartBlock: UNSET,
-			Inputs: []*pbtransform.Input{
+			Inputs: []*pbsubstreams.Module_Input{
 				{
-					Input: &pbtransform.Input_Store{
-						Store: &pbtransform.InputStore{
+					Input: &pbsubstreams.Module_Input_Store_{
+						Store: &pbsubstreams.Module_Input_Store{
 							ModuleName: "pairs",
 						},
 					},
 				},
 				{
-					Input: &pbtransform.Input_Store{
-						Store: &pbtransform.InputStore{
+					Input: &pbsubstreams.Module_Input_Store_{
+						Store: &pbsubstreams.Module_Input_Store{
 							ModuleName: "prices",
 						},
 					},
@@ -303,10 +304,10 @@ func TestModuleGraph_computeStartBlocks(t *testing.T) {
 		{
 			Name:       "volumes",
 			StartBlock: UNSET,
-			Inputs: []*pbtransform.Input{
+			Inputs: []*pbsubstreams.Module_Input{
 				{
-					Input: &pbtransform.Input_Store{
-						Store: &pbtransform.InputStore{
+					Input: &pbsubstreams.Module_Input_Store_{
+						Store: &pbsubstreams.Module_Input_Store{
 							ModuleName: "mint_burn_swaps_extractor",
 						},
 					},
@@ -316,17 +317,17 @@ func TestModuleGraph_computeStartBlocks(t *testing.T) {
 		{
 			Name:       "database_output",
 			StartBlock: UNSET,
-			Inputs: []*pbtransform.Input{
+			Inputs: []*pbsubstreams.Module_Input{
 				{
-					Input: &pbtransform.Input_Store{
-						Store: &pbtransform.InputStore{
+					Input: &pbsubstreams.Module_Input_Store_{
+						Store: &pbsubstreams.Module_Input_Store{
 							ModuleName: "mint_burn_swaps_extractor",
 						},
 					},
 				},
 				{
-					Input: &pbtransform.Input_Store{
-						Store: &pbtransform.InputStore{
+					Input: &pbsubstreams.Module_Input_Store_{
+						Store: &pbsubstreams.Module_Input_Store{
 							ModuleName: "volumes",
 						},
 					},
@@ -336,17 +337,17 @@ func TestModuleGraph_computeStartBlocks(t *testing.T) {
 		{
 			Name:       "totals",
 			StartBlock: UNSET,
-			Inputs: []*pbtransform.Input{
+			Inputs: []*pbsubstreams.Module_Input{
 				{
-					Input: &pbtransform.Input_Store{
-						Store: &pbtransform.InputStore{
+					Input: &pbsubstreams.Module_Input_Store_{
+						Store: &pbsubstreams.Module_Input_Store{
 							ModuleName: "mint_burn_swaps_extractor",
 						},
 					},
 				},
 				{
-					Input: &pbtransform.Input_Store{
-						Store: &pbtransform.InputStore{
+					Input: &pbsubstreams.Module_Input_Store_{
+						Store: &pbsubstreams.Module_Input_Store{
 							ModuleName: "block_to_pairs",
 						},
 					},
@@ -369,7 +370,7 @@ func TestModuleGraph_ComputeStartBlocks_WithOneParentContainingNoStartBlock(t *t
 		bstream.GetProtocolFirstStreamableBlock = oldValue
 	}()
 
-	var testModules = []*pbtransform.Module{
+	var testModules = []*pbsubstreams.Module{
 		{
 			Name:       "A",
 			StartBlock: UNSET,
@@ -377,10 +378,10 @@ func TestModuleGraph_ComputeStartBlocks_WithOneParentContainingNoStartBlock(t *t
 		{
 			Name:       "B",
 			StartBlock: UNSET,
-			Inputs: []*pbtransform.Input{
+			Inputs: []*pbsubstreams.Module_Input{
 				{
-					Input: &pbtransform.Input_Store{
-						Store: &pbtransform.InputStore{
+					Input: &pbsubstreams.Module_Input_Store_{
+						Store: &pbsubstreams.Module_Input_Store{
 							ModuleName: "A",
 						},
 					},
@@ -397,7 +398,7 @@ func TestModuleGraph_ComputeStartBlocks_WithOneParentContainingNoStartBlock(t *t
 }
 
 func TestModuleGraph_ComputeStartBlocks_WithOneParentContainingAStartBlock(t *testing.T) {
-	var testModules = []*pbtransform.Module{
+	var testModules = []*pbsubstreams.Module{
 		{
 			Name:       "A",
 			StartBlock: ten,
@@ -405,10 +406,10 @@ func TestModuleGraph_ComputeStartBlocks_WithOneParentContainingAStartBlock(t *te
 		{
 			Name:       "B",
 			StartBlock: UNSET,
-			Inputs: []*pbtransform.Input{
+			Inputs: []*pbsubstreams.Module_Input{
 				{
-					Input: &pbtransform.Input_Store{
-						Store: &pbtransform.InputStore{
+					Input: &pbsubstreams.Module_Input_Store_{
+						Store: &pbsubstreams.Module_Input_Store{
 							ModuleName: "A",
 						},
 					},
@@ -425,7 +426,7 @@ func TestModuleGraph_ComputeStartBlocks_WithOneParentContainingAStartBlock(t *te
 }
 
 func TestModuleGraph_ComputeStartBlocks_WithTwoParentsAndAGrandParentContainingStartBlock(t *testing.T) {
-	var testModules = []*pbtransform.Module{
+	var testModules = []*pbsubstreams.Module{
 		{
 			Name:       "A",
 			StartBlock: ten,
@@ -433,10 +434,10 @@ func TestModuleGraph_ComputeStartBlocks_WithTwoParentsAndAGrandParentContainingS
 		{
 			Name:       "B",
 			StartBlock: UNSET,
-			Inputs: []*pbtransform.Input{
+			Inputs: []*pbsubstreams.Module_Input{
 				{
-					Input: &pbtransform.Input_Store{
-						Store: &pbtransform.InputStore{
+					Input: &pbsubstreams.Module_Input_Store_{
+						Store: &pbsubstreams.Module_Input_Store{
 							ModuleName: "A",
 						},
 					},
@@ -446,10 +447,10 @@ func TestModuleGraph_ComputeStartBlocks_WithTwoParentsAndAGrandParentContainingS
 		{
 			Name:       "C",
 			StartBlock: UNSET,
-			Inputs: []*pbtransform.Input{
+			Inputs: []*pbsubstreams.Module_Input{
 				{
-					Input: &pbtransform.Input_Store{
-						Store: &pbtransform.InputStore{
+					Input: &pbsubstreams.Module_Input_Store_{
+						Store: &pbsubstreams.Module_Input_Store{
 							ModuleName: "A",
 						},
 					},
@@ -459,17 +460,17 @@ func TestModuleGraph_ComputeStartBlocks_WithTwoParentsAndAGrandParentContainingS
 		{
 			Name:       "D",
 			StartBlock: UNSET,
-			Inputs: []*pbtransform.Input{
+			Inputs: []*pbsubstreams.Module_Input{
 				{
-					Input: &pbtransform.Input_Store{
-						Store: &pbtransform.InputStore{
+					Input: &pbsubstreams.Module_Input_Store_{
+						Store: &pbsubstreams.Module_Input_Store{
 							ModuleName: "B",
 						},
 					},
 				},
 				{
-					Input: &pbtransform.Input_Store{
-						Store: &pbtransform.InputStore{
+					Input: &pbsubstreams.Module_Input_Store_{
+						Store: &pbsubstreams.Module_Input_Store{
 							ModuleName: "C",
 						},
 					},
@@ -488,7 +489,7 @@ func TestModuleGraph_ComputeStartBlocks_WithTwoParentsAndAGrandParentContainingS
 }
 
 func TestModuleGraph_ComputeStartBlocks_WithThreeParentsEachContainingAStartBlock(t *testing.T) {
-	var testModules = []*pbtransform.Module{
+	var testModules = []*pbsubstreams.Module{
 		{
 			Name:       "A",
 			StartBlock: ten,
@@ -504,24 +505,24 @@ func TestModuleGraph_ComputeStartBlocks_WithThreeParentsEachContainingAStartBloc
 		{
 			Name:       "D",
 			StartBlock: UNSET,
-			Inputs: []*pbtransform.Input{
+			Inputs: []*pbsubstreams.Module_Input{
 				{
-					Input: &pbtransform.Input_Store{
-						Store: &pbtransform.InputStore{
+					Input: &pbsubstreams.Module_Input_Store_{
+						Store: &pbsubstreams.Module_Input_Store{
 							ModuleName: "A",
 						},
 					},
 				},
 				{
-					Input: &pbtransform.Input_Store{
-						Store: &pbtransform.InputStore{
+					Input: &pbsubstreams.Module_Input_Store_{
+						Store: &pbsubstreams.Module_Input_Store{
 							ModuleName: "B",
 						},
 					},
 				},
 				{
-					Input: &pbtransform.Input_Store{
-						Store: &pbtransform.InputStore{
+					Input: &pbsubstreams.Module_Input_Store_{
+						Store: &pbsubstreams.Module_Input_Store{
 							ModuleName: "C",
 						},
 					},

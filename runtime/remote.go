@@ -4,13 +4,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/golang/protobuf/proto"
 	"github.com/streamingfast/bstream"
 	"github.com/streamingfast/substreams/client"
 	"github.com/streamingfast/substreams/manifest"
 	pbsubstreams "github.com/streamingfast/substreams/pb/sf/substreams/v1"
 	"golang.org/x/net/context"
-	"google.golang.org/protobuf/types/known/anypb"
 )
 
 func RemoteRun(ctx context.Context, config *Config) error {
@@ -26,17 +24,6 @@ func RemoteRun(ctx context.Context, config *Config) error {
 	manifProto, err := manif.ToProto()
 	if err != nil {
 		return fmt.Errorf("parse manifest to proto%q: %w", config.ManifestPath, err)
-	}
-
-	// TURN THAT INTO A REQUEST NOW
-	sub := &pbsubstreams.Request{
-		OutputModule: config.OutputStreamName,
-		Manifest:     manifProto,
-	}
-
-	trans, err := anypb.New(sub)
-	if err != nil {
-		return fmt.Errorf("convert transform to any: %w", err)
 	}
 
 	graph, err := manifest.NewModuleGraph(manifProto.Modules)
@@ -92,36 +79,36 @@ func RemoteRun(ctx context.Context, config *Config) error {
 		case *pbsubstreams.Response_Data:
 			// block-scoped data
 			resp := r.Data
-			cursor, _ := bstream.CursorFromOpaque(resp.Cursor)
+			//cursor, _ := bstream.CursorFromOpaque(resp.Cursor)
 
 			if err := config.ReturnHandler(resp); err != nil {
 				fmt.Printf("RETURN HANDLER ERROR: %s\n", err)
 			}
 
-			fmt.Println("---------- %d (%s) %s", resp.Clock.Number, resp.Clock.Id, resp.Clock.Timestamp)
-			for _, output := range resp.Outputs {
-				for _, line := range output.Logs {
-					fmt.Printf("LOG (%s): %s\n", output.Name, line)
-				}
-				switch data := output.Data.(type) {
-				case *pbsubstreams.ModuleOutput_MapOutput:
-					retErr := config.ReturnHandler(output, stepFromProto(resp.Step), cursor)
-					if retErr != nil {
-						fmt.Println(retErr)
-					}
-					_ = data
-				case *pbsubstreams.ModuleOutput_StoreDeltas:
-					retErr := config.ReturnHandler(output, stepFromProto(resp.Step), cursor)
-					if retErr != nil {
-						fmt.Println(retErr)
-					}
-					_ = data
-				}
-				err = proto.Unmarshal(output.Block.GetValue(), output)
-				if err != nil {
-					return fmt.Errorf("unmarshalling substream output: %w", err)
-				}
-			}
+			// fmt.Println("---------- %d (%s) %s", resp.Clock.Number, resp.Clock.Id, resp.Clock.Timestamp)
+			// for _, output := range resp.Outputs {
+			// for _, line := range output.Logs {
+			// 	fmt.Printf("LOG (%s): %s\n", output.Name, line)
+			// }
+			// switch data := output.Data.(type) {
+			// case *pbsubstreams.ModuleOutput_MapOutput:
+			// 	retErr := config.ReturnHandler(output, stepFromProto(resp.Step), cursor)
+			// 	if retErr != nil {
+			// 		fmt.Println(retErr)
+			// 	}
+			// 	_ = data
+			// case *pbsubstreams.ModuleOutput_StoreDeltas:
+			// 	retErr := config.ReturnHandler(output, stepFromProto(resp.Step), cursor)
+			// 	if retErr != nil {
+			// 		fmt.Println(retErr)
+			// 	}
+			// 	_ = data
+			// }
+			// err = proto.Unmarshal(output.Block.GetValue(), output)
+			// if err != nil {
+			// 	return fmt.Errorf("unmarshalling substream output: %w", err)
+			// }
+			// }
 		}
 	}
 }

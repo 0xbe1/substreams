@@ -6,13 +6,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/test-go/testify/require"
-
-	pbtransform "github.com/streamingfast/substreams/pb/sf/substreams/transform/v1"
-
 	"github.com/streamingfast/dstore"
 	"github.com/streamingfast/substreams/manifest"
+	pbsubstreams "github.com/streamingfast/substreams/pb/sf/substreams/v1"
 	"github.com/stretchr/testify/assert"
+	"github.com/test-go/testify/require"
 )
 
 func TestKVRegex(t *testing.T) {
@@ -31,18 +29,18 @@ func TestPartialRegex(t *testing.T) {
 	assert.Equal(t, res[0][2], "12345")
 }
 
-var testModules = []*pbtransform.Module{
+var testModules = []*pbsubstreams.Module{
 	{
 		Name:   "A",
-		Kind:   &pbtransform.Module_KindMap{KindMap: &pbtransform.KindMap{}},
+		Kind:   &pbsubstreams.Module_KindMap_{KindMap: &pbsubstreams.Module_KindMap{}},
 		Inputs: nil,
 	},
 	{
 		Name: "B",
-		Kind: &pbtransform.Module_KindStore{KindStore: &pbtransform.KindStore{}},
-		Inputs: []*pbtransform.Input{
+		Kind: &pbsubstreams.Module_KindStore_{KindStore: &pbsubstreams.Module_KindStore{}},
+		Inputs: []*pbsubstreams.Module_Input{
 			{
-				Input: &pbtransform.Input_Store{Store: &pbtransform.InputStore{
+				Input: &pbsubstreams.Module_Input_Store_{Store: &pbsubstreams.Module_Input_Store{
 					ModuleName: "A",
 				}},
 			},
@@ -50,10 +48,10 @@ var testModules = []*pbtransform.Module{
 	},
 	{
 		Name: "C",
-		Kind: &pbtransform.Module_KindStore{KindStore: &pbtransform.KindStore{}},
-		Inputs: []*pbtransform.Input{
+		Kind: &pbsubstreams.Module_KindStore_{KindStore: &pbsubstreams.Module_KindStore{}},
+		Inputs: []*pbsubstreams.Module_Input{
 			{
-				Input: &pbtransform.Input_Store{Store: &pbtransform.InputStore{
+				Input: &pbsubstreams.Module_Input_Store_{Store: &pbsubstreams.Module_Input_Store{
 					ModuleName: "A",
 				}},
 			},
@@ -61,10 +59,10 @@ var testModules = []*pbtransform.Module{
 	},
 	{
 		Name: "D",
-		Kind: &pbtransform.Module_KindMap{KindMap: &pbtransform.KindMap{}},
-		Inputs: []*pbtransform.Input{
+		Kind: &pbsubstreams.Module_KindMap_{KindMap: &pbsubstreams.Module_KindMap{}},
+		Inputs: []*pbsubstreams.Module_Input{
 			{
-				Input: &pbtransform.Input_Store{Store: &pbtransform.InputStore{
+				Input: &pbsubstreams.Module_Input_Store_{Store: &pbsubstreams.Module_Input_Store{
 					ModuleName: "B",
 				}},
 			},
@@ -72,10 +70,10 @@ var testModules = []*pbtransform.Module{
 	},
 	{
 		Name: "E",
-		Kind: &pbtransform.Module_KindStore{KindStore: &pbtransform.KindStore{}},
-		Inputs: []*pbtransform.Input{
+		Kind: &pbsubstreams.Module_KindStore_{KindStore: &pbsubstreams.Module_KindStore{}},
+		Inputs: []*pbsubstreams.Module_Input{
 			{
-				Input: &pbtransform.Input_Store{Store: &pbtransform.InputStore{
+				Input: &pbsubstreams.Module_Input_Store_{Store: &pbsubstreams.Module_Input_Store{
 					ModuleName: "C",
 				}},
 			},
